@@ -1,10 +1,11 @@
 using System.Data;
 using System.Data.SqlClient;
 using System.Text;
+using API.Core.Custom;
 using Microsoft.Extensions.Configuration;
 using static API.Core.Models.Enums;
 
-namespace API.Core.Custom
+namespace API.Infrastructure.Managers
 {
     public class DbManager : IDbManager
     {
@@ -25,7 +26,7 @@ namespace API.Core.Custom
             {
                 sb.Append("Read");
             }
-            _connectionString = ConfigurationExtensions.GetConnectionString(config, sb.ToString()).ToString();
+            _connectionString = config.GetConnectionString(sb.ToString()).ToString();
         }
 
         public IDbConnection GetConnection()

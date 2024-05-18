@@ -2,6 +2,7 @@ using API.Core;
 using Microsoft.Extensions.Configuration;
 using Xunit;
 using API.Core.Models;
+using API.Infrastructure.Managers;
 
 namespace API.Tests
 {

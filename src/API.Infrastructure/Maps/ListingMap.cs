@@ -1,7 +1,7 @@
 using API.Core.Models;
 using Dapper.FluentMap.Mapping;
 
-namespace API.Core.Maps
+namespace API.Infrastructure.Maps
 {
     public class ListingMap : EntityMap<Listing>
     {
