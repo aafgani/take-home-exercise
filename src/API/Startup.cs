@@ -1,4 +1,5 @@
 using API.Infrastructure;
+using API.Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -20,6 +21,7 @@ namespace API
         public void ConfigureServices(IServiceCollection services)
         {
             services
+                .AddCore()
                 .AddInfrastructure();
             services.AddControllers();
         }
@@ -41,8 +43,6 @@ namespace API
                 endpoints.MapControllers();
             });
 
-            // initialise Dapper Fluent mappings
-            API.Core.Startup.Register();
         }
     }
 }

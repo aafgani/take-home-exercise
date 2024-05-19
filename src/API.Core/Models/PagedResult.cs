@@ -3,12 +3,15 @@ using System.Linq;
 
 namespace API.Core.Models
 {
-    public class PagedResult<T>
+    public class BasePaged
     {
         public int Offset { get; set; }
 
         public int Total { get; set; }
+    }
 
+    public class PagedResult<T> : BasePaged
+    {
         public int Count => Results.Count();
 
         public IEnumerable<T> Results { get; set; }

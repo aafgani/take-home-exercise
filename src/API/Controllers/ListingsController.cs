@@ -1,8 +1,11 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using API.Core;
 using API.Core.Models;
+using API.Core.UseCases.Listings.GetListings;
 using API.Infrastructure.Managers;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -16,35 +19,35 @@ namespace API.Controllers
     public class ListingsController : ControllerBase
     {
         private readonly ILogger<ListingsController> _logger;
-        private IListManager _listManager;
+        private IMediator _mediator;
 
-        public ListingsController(ILogger<ListingsController> logger, IListManager listManager)
+        public ListingsController(ILogger<ListingsController> logger, IMediator mediator)
         {
             _logger = logger;
-            _listManager = listManager;
+            _mediator = mediator;
         }
 
         [HttpGet("getlistings")]
-        public IActionResult GetListings(string suburb, CategoryType categoryType = CategoryType.None, StatusType statusType = StatusType.None, int skip = 0, int take = 10)
+        public async Task<IActionResult> GetListingsAsync(string suburb, CategoryType categoryType = CategoryType.None, StatusType statusType = StatusType.None, int skip = 0, int take = 10)
         {
             if (string.IsNullOrEmpty(suburb))
                 return BadRequest("No Suburb provided");
 
-            PagedResult<Listing> listings = _listManager.GetListings(suburb, categoryType, statusType, skip, take);
-
-            if (listings != null && listings.Results != null)
+            var command = new GetListingsCommand
             {
-                if (!listings.Results.Any())
-                {
-                    throw new Exception("No results");
-                }
-                else
-                {
-                    return Ok(JsonConvert.SerializeObject(listings));
-                }
-            }
+                CategoryType = categoryType,
+                StatusType = statusType,
+                Suburb = suburb,
+                Offset = skip,
+                Total = take
+            };
+            var result = await _mediator.Send(command);
 
-            return NotFound();
+            if (result.IsError)
+                return BadRequest(string.Join(",", result.Error));
+
+            return Ok(JsonConvert.SerializeObject(result.Result));
+
         }
     }
 }
