@@ -30,9 +30,6 @@ namespace API.Controllers
         [HttpGet("getlistings")]
         public async Task<IActionResult> GetListingsAsync(string suburb, CategoryType categoryType = CategoryType.None, StatusType statusType = StatusType.None, int skip = 0, int take = 10)
         {
-            if (string.IsNullOrEmpty(suburb))
-                return BadRequest("No Suburb provided");
-
             var command = new GetListingsCommand
             {
                 CategoryType = categoryType,
