@@ -30,20 +30,28 @@ namespace API.Controllers
         [HttpGet("getlistings")]
         public async Task<IActionResult> GetListingsAsync(string suburb, CategoryType categoryType = CategoryType.None, StatusType statusType = StatusType.None, int skip = 0, int take = 10)
         {
-            var command = new GetListingsCommand
+            try
             {
-                CategoryType = categoryType,
-                StatusType = statusType,
-                Suburb = suburb,
-                Offset = skip,
-                Total = take
-            };
-            var result = await _mediator.Send(command);
+                var command = new GetListingsCommand
+                {
+                    CategoryType = categoryType,
+                    StatusType = statusType,
+                    Suburb = suburb,
+                    Offset = skip,
+                    Total = take
+                };
+                var result = await _mediator.Send(command);
 
-            if (result.IsError)
-                return BadRequest(string.Join(",", result.Error));
+                if (result.IsError)
+                    return BadRequest(string.Join(",", result.Error));
 
-            return Ok(JsonConvert.SerializeObject(result.Result));
+                return Ok(JsonConvert.SerializeObject(result.Result));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                throw new Exception("No results");
+            }
 
         }
     }
