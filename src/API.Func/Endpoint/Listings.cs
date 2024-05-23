@@ -9,19 +9,19 @@ using static API.Core.Models.Enums;
 
 namespace API.Func.Endpoint
 {
-    public class GetListings
+    public class Listings
     {
-        private readonly ILogger<GetListings> _logger;
+        private readonly ILogger<Listings> _logger;
         private readonly IMediator _mediator;
 
-        public GetListings(ILogger<GetListings> logger, IMediator mediator)
+        public Listings(ILogger<Listings> logger, IMediator mediator)
         {
             _logger = logger;
-            this._mediator = mediator;
+            _mediator = mediator;
         }
 
-        [Function("GetListings")]
-        public async Task<IActionResult> RunAsync([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequest req,
+        [Function(FunctionName.GetListings)]
+        public async Task<IActionResult> GetAsync([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequest req,
         string suburb, CategoryType categoryType = CategoryType.None, StatusType statusType = StatusType.None,
         int skip = 0, int take = 10)
         {
@@ -43,11 +43,29 @@ namespace API.Func.Endpoint
                 return new OkObjectResult(result.Result);
             }
 
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex.Message, ex);
-                return new BadRequestResult();
+                throw;
             }
+        }
+
+        [Function(FunctionName.InsertListing)]
+        public async Task<IActionResult> PostAsync([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequest req)
+        {
+            try
+            {
+                string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+
+                _logger.LogInformation(requestBody);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                throw;
+            }
+
+            return new OkObjectResult("Ok");
         }
     }
 }
