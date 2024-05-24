@@ -7,6 +7,7 @@ using API.Core.Custom;
 using API.Core.Models;
 using Dapper;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using static API.Core.Models.Enums;
 
 namespace API.Infrastructure.Managers
@@ -15,8 +16,9 @@ namespace API.Infrastructure.Managers
     {
         private readonly IConfiguration _configuration;
 
-        public ListManager(IConfiguration config)
+        public ListManager(IConfiguration config, IOptions<DatabaseConfiguration> options)
         {
+            var dbConfig = options.Value;
             _configuration = config;
         }
         public PagedResult<Listing> GetListings(string suburb, CategoryType categoryType, StatusType statusType, int skip, int take)

@@ -15,4 +15,8 @@
     <ProjectReference Include="..\API.Core\API.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Repositories\" />
+  </ItemGroup>
+
 </Project>

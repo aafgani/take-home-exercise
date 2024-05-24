@@ -23,7 +23,7 @@ namespace API
             services
                 .AddConfiguration(Configuration)
                 .AddCore()
-                .AddInfrastructure();
+                .AddInfrastructure(Configuration);
             services.AddControllers();
         }
 
@@ -41,6 +41,7 @@ namespace API
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapTodoEndpoints();
                 endpoints.MapControllers();
             });
 
