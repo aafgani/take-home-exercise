@@ -16,9 +16,8 @@ namespace API.Infrastructure.Managers
     {
         private readonly IConfiguration _configuration;
 
-        public ListManager(IConfiguration config, IOptions<DatabaseConfiguration> options)
+        public ListManager(IConfiguration config)
         {
-            var dbConfig = options.Value;
             _configuration = config;
         }
         public PagedResult<Listing> GetListings(string suburb, CategoryType categoryType, StatusType statusType, int skip, int take)

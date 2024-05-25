@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using API.Core;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Logging;
 namespace API;
 
 public static class TodoEndpoints
@@ -14,8 +16,30 @@ public static class TodoEndpoints
 
         group.MapGet("/", async (string userId, IMediator mediator) =>
         {
-            var todos = await mediator.Send(new GetTodosCommand { UserId = userId });
-            return todos is null ? Results.NotFound() : Results.Ok(todos.Result);
+            try
+            {
+                var todos = await mediator.Send(new GetTodosCommand { UserId = userId });
+                if (todos.IsError)
+                    return Results.BadRequest(string.Join(",", todos.Error));
+
+                return Results.Ok(todos.Result);
+            }
+            catch (Exception ex)
+            {
+                return Results.Problem(ex.Message);
+            }
+        });
+
+        group.MapPost("/", async (Todo param, IMediator mediator) =>
+        {
+            try
+            {
+                var result = await mediator.Send(new AddTodosCommand { ItemName = param.ItemName, CreatedBy = param.CreatedBy });
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
         });
 
         return group;

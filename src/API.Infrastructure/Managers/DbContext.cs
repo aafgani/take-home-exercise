@@ -56,9 +56,9 @@ public class DbContext : IDbContext
         _dbConnection = null;
     }
 
-    public Task Execute(string query, object parameters, CommandType? cmdType = null)
+    public async Task Execute(string query, object parameters, CommandType? cmdType = null)
     {
-        throw new NotImplementedException();
+        await _dbConnection.ExecuteAsync(query, parameters, commandType: CommandType.Text);
     }
 
     public Task<IEnumerable<T>> Query<T>(string query, object parameters, CommandType? cmdType = null)

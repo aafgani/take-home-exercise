@@ -3,16 +3,20 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using API.Core;
 using API.Infrastructure;
+using Microsoft.Extensions.Configuration;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWebApplication()
-    .ConfigureServices(services => {
+    .ConfigureServices(services =>
+    {
         services.AddApplicationInsightsTelemetryWorkerService();
         services.ConfigureFunctionsApplicationInsights();
 
+        var configuration = services.BuildServiceProvider().GetService<IConfiguration>();
+
         services
             .AddCore()
-            .AddInfrastructure();
+            .AddInfrastructure(configuration);
     })
     .Build();
 
