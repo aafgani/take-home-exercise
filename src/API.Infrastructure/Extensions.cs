@@ -28,7 +28,7 @@ namespace API.Infrastructure
                 config.AddMap(new ListingMap());
             });
 
-            services.AddScoped((s) => new SqlConnection(configuration.GetConnectionStringOrThrown("Todo")));
+            services.AddScoped((s) => new SqlConnection(configuration.GetConnectionStringOrThrown("Todo:Database")));
             services.AddScoped<IDbContext, DbContext>(s =>
             {
                 SqlConnection conn = s.GetRequiredService<SqlConnection>();
