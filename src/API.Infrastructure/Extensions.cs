@@ -42,7 +42,8 @@ namespace API.Infrastructure
 
             services.AddAzureClients(azureBuilder =>
             {
-                azureBuilder.AddBlobServiceClient(storageConnection);
+                if (!string.IsNullOrEmpty(storageConnection))
+                    azureBuilder.AddBlobServiceClient(storageConnection);
             });
 
             return services;

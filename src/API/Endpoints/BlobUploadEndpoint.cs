@@ -15,10 +15,13 @@ public static class BlobUploadEndpoint
     {
         var group = routes.MapGroup("/blob");
 
-        group.MapPost("/fileUpload", async (HttpContext context, string location, BlobServiceClient blobService) =>
+        group.MapPost("/fileUpload", async (HttpContext context, string location, BlobServiceClient? blobService) =>
         {
             try
             {
+                if (blobService == null)
+                    return Results.BadRequest("blob service unavailable");
+
                 var form = await context.Request.ReadFormAsync();
                 var files = form.Files;
                 var file = files.Any() && files.Count > 0 ? files[0] : null;
