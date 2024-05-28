@@ -10,5 +10,5 @@ public interface IGenericRepository<T> where T : class
     Task<IEnumerable<T>> GetAll();
     Task Add(T entity);
     Task Delete(T entity);
-    Task UpdateAsync(T entity);
+    Task Update(T entity);
 }

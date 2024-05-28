@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 using API.Core;
+using API.Core.Models;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;

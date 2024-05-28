@@ -23,7 +23,7 @@ public class GetTodosHandler : IRequestHandler<GetTodosCommand, EventResult<Page
         {
             Result = new PagedResult<Todo>
             {
-                Results = await _repository.GetByUser(request.UserId)
+                Data = await _repository.GetByUser(request.UserId)
             }
         };
     }

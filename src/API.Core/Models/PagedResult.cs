@@ -12,9 +12,9 @@ namespace API.Core.Models
 
     public class PagedResult<T> : BasePaged
     {
-        public int Count => Results.Count();
+        public int Count => Data.Count();
 
-        public IEnumerable<T> Results { get; set; }
+        public IEnumerable<T> Data { get; set; }
 
         public PagedResult() { }
 
@@ -22,7 +22,7 @@ namespace API.Core.Models
         {
             Offset = offset;
             Total = total;
-            Results = results ?? new List<T>();
+            Data = results ?? new List<T>();
         }
     }
 }

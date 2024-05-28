@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using API.Core;
 using API.Core.Interface;
+using API.Core.Models;
 
 namespace API.Infrastructure.Repositories;
 
@@ -20,6 +22,7 @@ public class TodoRepository : ITodoRepository
         string query = @"
             INSERT INTO [Todo]
             (
+                [Id],
                 [ItemName],
                 [IsCompleted],
                 [CreatedDate],
@@ -27,6 +30,7 @@ public class TodoRepository : ITodoRepository
             )
             VALUES
             (
+                @Id,
                 @ItemName
                 ,@IsCompleted
                 ,GETDATE()
@@ -51,9 +55,20 @@ public class TodoRepository : ITodoRepository
         throw new NotImplementedException();
     }
 
-    public Task<Todo> GetById(string id)
+    public async Task<Todo> GetById(string id)
     {
-        throw new NotImplementedException();
+        string query = @"
+            SELECT
+                convert(nvarchar(50),  [Id]) Id,
+                [ItemName],
+                [IsCompleted],
+                [CreatedDate],
+                [CreatedBy]
+            FROM [Todo]
+            WHERE  convert(nvarchar(50),  [Id]) = @id AND IsDeleted = 0
+        ";
+        var result = await dbContext.Query<Todo>(query, new { id = id });
+        return result.FirstOrDefault();
     }
 
     public async Task<IEnumerable<Todo>> GetByUser(string user)
@@ -66,14 +81,21 @@ public class TodoRepository : ITodoRepository
             [CreatedDate],
             [CreatedBy]
         FROM [Todo]
-        WHERE CreatedBy = @user
+        WHERE CreatedBy = @user AND IsDeleted = 0
         ";
         var result = await dbContext.Query<Todo>(query, new { user = user });
         return result;
     }
 
-    public Task UpdateAsync(Todo entity)
+    public async Task Update(Todo entity)
     {
-        throw new NotImplementedException();
+        var query = @"
+          UPDATE [Todo]
+            SET  [ItemName] =@ItemName,
+                    [IsCompleted] = @IsCompleted,
+                    IsDeleted = @IsDeleted
+            WHERE [Id] = @Id
+        ";
+        await dbContext.Execute(query, entity);
     }
 }
