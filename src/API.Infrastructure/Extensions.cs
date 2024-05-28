@@ -4,6 +4,7 @@ using API.Infrastructure.Managers;
 using API.Infrastructure.Maps;
 using API.Infrastructure.Repositories;
 using Dapper.FluentMap;
+using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -21,6 +22,8 @@ namespace API.Infrastructure
            this IServiceCollection services,
            IConfiguration configuration)
         {
+            var storageConnection = configuration.GetConnectionStringOrThrown("Todo:Storage");
+
             services.AddScoped<IListManager, ListManager>();
 
             FluentMapper.Initialize(config =>
@@ -36,6 +39,11 @@ namespace API.Infrastructure
                 return new DbContext(conn);
             });
             services.AddScoped<ITodoRepository, TodoRepository>();
+
+            services.AddAzureClients(azureBuilder =>
+            {
+                azureBuilder.AddBlobServiceClient(storageConnection);
+            });
 
             return services;
         }
