@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -43,7 +44,13 @@ namespace API.Infrastructure
             services.AddAzureClients(azureBuilder =>
             {
                 if (!string.IsNullOrEmpty(storageConnection))
+                {
                     azureBuilder.AddBlobServiceClient(storageConnection);
+                    azureBuilder.AddQueueServiceClient(storageConnection).ConfigureOptions(options =>
+                    {
+                        options.MessageEncoding = Azure.Storage.Queues.QueueMessageEncoding.Base64;
+                    });
+                }
             });
 
             return services;

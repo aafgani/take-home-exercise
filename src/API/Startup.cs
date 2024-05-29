@@ -44,7 +44,7 @@ namespace API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapTodoEndpoints();
-                endpoints.MapBlobEndpoints();
+                endpoints.MapStorageEndpoints();
                 endpoints.MapControllers();
             });
 

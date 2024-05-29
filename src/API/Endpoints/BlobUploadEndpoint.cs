@@ -2,6 +2,7 @@
 using System.Linq;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using Azure.Storage.Queues;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -11,16 +12,16 @@ namespace API;
 
 public static class BlobUploadEndpoint
 {
-    public static RouteGroupBuilder MapBlobEndpoints(this IEndpointRouteBuilder routes)
+    public static RouteGroupBuilder MapStorageEndpoints(this IEndpointRouteBuilder routes)
     {
-        var group = routes.MapGroup("/blob");
+        var group = routes.MapGroup("/storage");
 
-        group.MapPost("/fileUpload", async (HttpContext context, string location, BlobServiceClient? blobService) =>
+        group.MapPost("/blobUpload", async (HttpContext context, string location, BlobServiceClient? blobService) =>
         {
             try
             {
                 if (blobService == null)
-                    return Results.BadRequest("blob service unavailable");
+                    return Results.BadRequest("service unavailable");
 
                 var form = await context.Request.ReadFormAsync();
                 var files = form.Files;
@@ -43,6 +44,31 @@ public static class BlobUploadEndpoint
             }
 
         });
+
+        group.MapPost("/queue", async (HttpContext context, string message, QueueServiceClient? queueService) =>
+       {
+           try
+           {
+               if (queueService == null)
+                   return Results.BadRequest("service unavailable");
+
+               if (string.IsNullOrEmpty(message))
+                   return Results.BadRequest("message can't be blank");
+
+               var queueClient = queueService.GetQueueClient("tes");
+               await queueClient.CreateIfNotExistsAsync();
+
+               await queueClient.SendMessageAsync($"{message}");
+
+               var response = "created";
+               return Results.Created("", response);
+           }
+           catch (System.Exception ex)
+           {
+               return Results.Problem(ex.Message);
+           }
+
+       });
 
         return group;
     }
