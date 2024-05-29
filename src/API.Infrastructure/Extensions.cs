@@ -55,6 +55,29 @@ namespace API.Infrastructure
 
             return services;
         }
+
+        public static IServiceCollection AddInfrastructure2(
+           this IServiceCollection services,
+           IConfiguration configuration)
+        {
+            services.AddScoped<IListManager, ListManager>();
+
+            FluentMapper.Initialize(config =>
+            {
+                config.AddMap(new ListingMap());
+            });
+
+            services.AddScoped((s) => new SqlConnection(configuration.GetConnectionStringOrThrown("Todo:Database")));
+            services.AddScoped<IDbContext, DbContext>(s =>
+            {
+                SqlConnection conn = s.GetRequiredService<SqlConnection>();
+                conn.Open();
+                return new DbContext(conn);
+            });
+            services.AddScoped<ITodoRepository, TodoRepository>();
+
+            return services;
+        }
     }
 
     public static class ConfigurationExtension
