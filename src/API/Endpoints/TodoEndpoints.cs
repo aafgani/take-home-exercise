@@ -35,7 +35,7 @@ public static class TodoEndpoints
         {
             try
             {
-                var result = await mediator.Send(new AddTodosCommand { ItemName = param.ItemName, CreatedBy = param.CreatedBy });
+                var result = await mediator.Send(new AddTodosCommand { Id = Guid.NewGuid().ToString(), ItemName = param.ItemName, CreatedBy = param.CreatedBy, CreatedDate = DateTime.Now });
             }
             catch (Exception e)
             {
