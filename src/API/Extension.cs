@@ -20,7 +20,7 @@ public static class Extension
         },
         options => { configuration.Bind("AzureAd", options); });
 
-        services.Configure<DatabaseConfiguration>(configuration.GetSection("DatabaseConfiguration"));
+        // services.Configure<DatabaseConfiguration>(configuration.GetSection("DatabaseConfiguration"));
         services.Configure<AzureAd>(configuration.GetSection("AzureAd"));
 
         //test config

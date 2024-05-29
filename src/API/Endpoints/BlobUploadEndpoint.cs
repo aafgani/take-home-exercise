@@ -31,7 +31,7 @@ public static class BlobUploadEndpoint
                     return Results.BadRequest("file not found");
 
                 var containerClient = blobService.GetBlobContainerClient("tes");
-                await containerClient.CreateIfNotExistsAsync(PublicAccessType.Blob);
+                await containerClient.CreateIfNotExistsAsync();
                 var newBlobName = $"{Guid.NewGuid().ToString()}.jpg";
                 await containerClient.UploadBlobAsync(newBlobName, file.OpenReadStream());
 
