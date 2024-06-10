@@ -25,7 +25,6 @@ namespace API
                 .AddConfiguration(Configuration)
                 .AddCore()
                 .AddInfrastructure(Configuration);
-            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -37,6 +36,9 @@ namespace API
             }
 
             app.UseRouting();
+
+            app.UseSwagger();
+            app.UseSwaggerUI();
 
             app.UseAuthentication();
             app.UseAuthorization();
