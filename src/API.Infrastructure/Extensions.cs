@@ -53,6 +53,8 @@ namespace API.Infrastructure
                 }
             });
 
+            services.AddApplicationInsightsTelemetry();
+
             return services;
         }
 

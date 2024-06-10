@@ -8,14 +8,23 @@ namespace Web.UI;
 public class TodoController : BaseController
 {
     private readonly IMediator mediator;
+    private ILogger<TodoController> logger;
 
-    public TodoController(IMediator mediator)
+    public TodoController(IMediator mediator, ILogger<TodoController> logger)
     {
         this.mediator = mediator;
+        this.logger = logger;
     }
 
     public async Task<IActionResult> Index()
     {
+        var iteration = 1;
+        logger.LogDebug($"Debug {iteration}");
+        logger.LogInformation($"Information {iteration}");
+        logger.LogWarning($"Warning {iteration}");
+        logger.LogError($"Error {iteration}");
+        logger.LogCritical($"Critical {iteration}");
+
         var cmd = new GetTodosCommand { UserId = GetUserName() };
         var result = await mediator.Send(cmd);
 
@@ -23,6 +32,20 @@ public class TodoController : BaseController
             return BadRequest(string.Join(",", result.Error));
 
         return View(result.Result.Data);
+    }
+
+    public IActionResult TesError()
+    {
+        try
+        {
+            throw new NotImplementedException();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, ex.Message);
+        }
+
+        return View();
     }
 
     [HttpPost]
